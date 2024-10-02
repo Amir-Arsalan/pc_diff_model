@@ -1,0 +1,11 @@
+images/*
+datasets/*
+logs/*
+test/*
+mnist/*
+__pycache__/
+*.out
+*.swp
+*.sh
+*.hdf5
+*.pt
