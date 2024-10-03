@@ -30,7 +30,7 @@ if __name__ == '__main__':
     parser.add_argument('--latent_flow_depth', type=int, help='the number of times the flow model performs iterative inference (default: 14)', default=14)
     parser.add_argument('--latent_flow_hidden_dim', type=int, help='hidden variable dimension for the generative flow model (default 256)', default=256)
     parser.add_argument('--sample_num_points', type=int, help='the number of points for generated/reconstructed objects (default: 2048)', default=2048)
-    parser.add_argument('--kl_weight', type=float, help='determines how much the model should push the posterior distribution be close to the prior (default 0.001)', default=0.001)
+    parser.add_argument('--kl_weight', type=float, help='determines how much the model should push the posterior distribution be close to the prior (default 0.001)', default=10.0)
     parser.add_argument('--bias', type=eval, help='Set bias when constructing neural network layers (default: True)', choices=[True, False], default=False)
 
     # Training parameters

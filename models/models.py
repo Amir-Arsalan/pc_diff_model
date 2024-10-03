@@ -102,14 +102,14 @@ class DiffusionPointCloudModel(nn.Module):
         mean, sigma = self.encode(x)
         recon_loss = self.diffusion_reconstruction.get_loss(x, mean)
         recon_loss = recon_loss.mean(dim=1, keepdim=True) # my modification to match all of the dimension of all loss elements
-        generation_loss = self.run_flow(x, mean, sigma, kl_weight)
+        generation_loss = self.run_flow(x, mean.clone().detach(), sigma, kl_weight)
         cd_cmd_prob = torch.rand(1).item()
-        if cd_cmd_prob <= 0.01 and not test_time:
+        if cd_cmd_prob <= 0.02 and not test_time:
             reconstruction = self.decode(mean, x.size(1), flexibility=self.args.flexibility) # reconstructions of the input point clouds
             cd_emd = self.computeCD_EMD(x, reconstruction)
         # return recon_loss + generation_loss
         if not test_time:
-            if cd_cmd_prob <= 0.01:
+            if cd_cmd_prob <= 0.02:
                 return (recon_loss + generation_loss + cd_emd).mean()
             else:
                 return (recon_loss + generation_loss).mean()
@@ -118,7 +118,7 @@ class DiffusionPointCloudModel(nn.Module):
     
     def computeCD_EMD(self, x, reconstruction):
         cd = self.cd(reconstruction.cpu(), x.cpu(), bidirectional=True, batch_reduction=None, point_reduction=None)
-        emd, _ = self.emd(reconstruction, x, 0.005, 200)
+        emd, _ = self.emd(reconstruction, x, 0.007, 150)
         return cd.mean(dim=1, keepdim=True).cuda() + emd.mean(dim=1, keepdim=True)
     
     
