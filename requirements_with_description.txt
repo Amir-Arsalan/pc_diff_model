@@ -1,0 +1,38 @@
+# Please note that this is not a regular requirements.txt. I used a Singularity container to install the requirement in, not a conda environment. I just carved out the Python packages that I installed as part of the container but it is possible that some other Ubuntu packages that are installed in the container could also be necessary to run the code. The Singularity container uses one of the Docker images that NVIDIA has within itself which has CUDNN and other libraries in it by default. So I also include the Definition file of the Singularity container I used, just in case.
+
+
+# Here are the Python packages that I installed inside the container
+matplotlib==3.9.2
+cffi==1.17.1
+Pillow==10.4.0
+h5py==3.12.1
+tensorflow==2.16.1
+tensorboardx==2.6.2.2
+moviepy==1.0.3
+tqdm==4.66.5
+torch==2.4.1
+torchvision==0.19.1
+av==10.0.0
+scipy==1.13.0
+numpy==1.26.4
+
+
+: <<'END'
+# Uncomment these lines to install chamferdist and the EMD loss package. Make sure you are on a machine with a GPU (and note that unfortunately as of now chamferdist does not work on GPU despite following the proper installation guideline based on what Krishna -- the main author of chamferdist -- told me)
+export TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6;9.0"
+python3 -m pip install cuda-python==12.4.0
+cd /
+git clone https://github.com/krrish94/chamferdist/
+cd chamferdist
+python3 setup.py install
+cd ..
+rm -rf chamferdist
+
+
+cd /
+git clone https://github.com/ZirongLiu/EMDLoss-for-large-scale-point-clouds/
+cd EMDLoss-for-large-scale-point-clouds
+python3 setup.py install
+cd ..
+rm -rf EMDLoss-for-large-scale-point-clouds
+END
